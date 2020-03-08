@@ -16,7 +16,7 @@ xHeaderListItem::xHeaderListItem(const char* name, rgb_color background_colour)
 }
 
 void
-xHeaderListItem::DrawItem(BView *owner, BRect frame, bool complete = false)
+xHeaderListItem::DrawItem(BView *owner, BRect frame, bool complete)
 {
 	owner->SetLowColor(fColour);
 	owner->FillRect(frame, B_SOLID_LOW);

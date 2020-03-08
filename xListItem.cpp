@@ -18,7 +18,7 @@ xListItem::xListItem(const char* name, BBitmap *icon, int32 i, int32 location)
 }
 
 void
-xListItem::DrawItem(BView *owner, BRect frame, bool complete = false)
+xListItem::DrawItem(BView *owner, BRect frame, bool complete)
 {
 	rgb_color colour;
 
