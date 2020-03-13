@@ -446,6 +446,39 @@ replimanWindow::GetReplicantAt(int32 index) const
 
 /*------------------------------------------------------------*/
 
+bool
+replimanWindow::FindDesktopMessenger(BMessenger *messanger) const
+{
+	BPath deskpath;
+	BEntry deskentry;
+	entry_ref deskref;
+
+	find_directory(B_DESKTOP_DIRECTORY, &deskpath, true);
+	if (deskentry.SetTo(deskpath.Path(), true) != B_OK)
+		return false;
+
+	if (deskentry.GetRef(&deskref) != B_OK)
+		return false;
+
+	BMessage	reply;
+	BMessage	request(B_GET_PROPERTY);
+	BMessenger	desktopmsng;
+	BMessenger	trackermsng("application/x-vnd.Be-TRAK", -1);
+
+	request.AddRef("data", &deskref);
+	request.AddSpecifier("Folder");
+
+	if (trackermsng.SendMessage(&request, &reply) != B_OK)
+		return false;
+
+	if (reply.FindMessenger("window", messanger) != B_OK)
+		return false;
+
+	return true;
+}
+
+/*------------------------------------------------------------*/
+
 BMessenger
 replimanWindow::MessengerForTarget(type_code w) const
 {
@@ -459,7 +492,7 @@ replimanWindow::MessengerForTarget(type_code w) const
 
 	request.AddSpecifier("Messenger");
 	request.AddSpecifier("Shelf");
-	
+
 	switch (w) {
 		case M_SET_DESKBAR_TARGET: {
 			// In the Deskbar the Shelf is in the View "Status" in Window "Deskbar"
@@ -472,8 +505,13 @@ replimanWindow::MessengerForTarget(type_code w) const
 			// The Desktop is owned by Tracker and the Shelf is in the
 			// View "PoseView" in Window "Desktop"
 			request.AddSpecifier("View", "PoseView");
-			request.AddSpecifier("Window", "/boot/home/Desktop");
-			to = BMessenger("application/x-vnd.Be-TRAK", -1);
+			if (FindDesktopMessenger(&to) == false)
+			{
+				// Window 0 works also fine,
+				// but it is undocumented feature that may be changed in the future
+				request.AddSpecifier("Window", int32(0));
+				to = BMessenger("application/x-vnd.Be-TRAK", -1);
+			}
 			break;
 		}
 	}

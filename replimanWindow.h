@@ -7,6 +7,7 @@
 #define __REPLIMANWINDOW_H__
 
 #include <Application.h>
+#include <FindDirectory.h>
 #include <Messenger.h>
 #include <Window.h>
 #include <Shelf.h>
@@ -24,6 +25,7 @@
 #include <Mime.h>
 #include <Node.h>
 #include <NodeInfo.h>
+#include <Path.h>
 #include <String.h>
 #include <Deskbar.h>
 #include <ClassInfo.h>
@@ -62,6 +64,7 @@ private:
 	status_t		GetReplicantName(int32 uid, BMessage *result) const;
 	BBitmap	*		GetReplicantIcon(int32 uid);
 	status_t		DeleteReplicant(int32 uid, int32 location);
+	bool			FindDesktopMessenger(BMessenger *messenger) const;
 	
 	bool			IsReplicantLoaded(int32 uid) const;
 		
